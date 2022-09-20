@@ -1,19 +1,7 @@
-## Example 2: Stochastic growth and death model
+## Example 2: Perfect vaccine
 
-This model includes births and deaths at per-capita rates \(r\) and \(s\) per week, respectively. The ODE for \(N\) is made up of the difference between the mean growth rate and the mean death rate:
+We are now going to model a 'perfect' vaccine that is introduced before the onset of an outbreak. In this case, we are also aiming to remove individuals from the \(Susceptible\) population before they come in contact with \(Infected\) individuals. In this case, however, we are moving them into an absorbing state, \(Vaccinated\), so they are assumed to remain there without interacting (i.e. no further movements in or out) with the rest of the population.
 
-$$ \frac{dN}{dt}=rN-sN $$
+\(p_vacc\) represents the proportion of \(Susceptible\) being vaccinated at the start of the model simulation. Run the model for 100 days with \(p_vacc\) set to its default value of 0. Note we are assuming a closed population where everyone mixes homogeneously.
 
-The difference \((r-s)\) is the net growth rate and the solution is either exponential growth or decline i.e.,
-
-$$ N(t) =N(0) \exp((r-s)t) $$
-
-If births exceed deaths (\(r > s\)) the population grows. If deaths exceed births (\(s > r\)) the population shrinks.
-
-In the stochastic simulation, we have to be more careful as we are dealing with individuals. Each individual has a probability of reproducing and of dying in some short interval, \(dt\). However, it can’t die and then give birth! These two dependent events that can happen are known as competing hazards. To calculate the number of births and deaths in a short time, we first calculate the number of births or deaths:
-
-$$ \mbox{Births or deaths in }dt, n \sim \mathrm{Binomial}(N,(r + s)dt) $$
-
-We then decide which were births and which deaths:
-
-$$ \mbox{Deaths in }dt \sim \mathrm{Binomial}(s / (r + s),n) $$
+Next, follow the instructions in the handout provided.

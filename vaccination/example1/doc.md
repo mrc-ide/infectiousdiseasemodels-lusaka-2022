@@ -1,15 +1,11 @@
-## Example 1: Deterministic and stochastic growth model
+## Example 1: Vaccination at birth
 
-This is a simple simulation of a birth process. Each individual has a birth rate (births per unit time), \(r\). In a short time, \(dt\), we would expect \(r \times dt\) new births for each individual. Thus, in a population of size \(N\) there will be \(rNdt\) births. So the ODE equation for change in population size is
+This is a simple simulation of a vaccine that is introduced at or soon after birth. Think back to your open SIR model. The aim of vaccinating at birth is to effectively remove new-born individuals from the \(Susceptible\) population before they come in contact with \(Infected\) individuals. So the ODE equations will be
 
-$$ \frac{dN}{dt}  = rN $$
+$$\frac{dS}{dt} = (1 - p) bN -\beta \frac{SI}{N} +\mu S$$
 
-where \(r\) is the growth rate per individual per unit time. The solution of this equation is exponential growth i.e.
+$$\frac{dI}{dt} = \beta \frac{SI}{N} -\gamma I -\mu I$$
 
-$$ N(t) = N(0) e^{rt}$$
+$$\frac{dR}{dt} = pbN +\gamma I -\mu R$$
 
-where \(N(0)\) is the initial population at time \(t = 0\).
-
-For a stochastic simulation, the probability that an individual gives birth in a short time, \(dt\), is given by \(r dt \). The same probability applies to each of the \( N \) individuals. Hence the number of new births will be binomially distributed:
-
-$$ \mbox{births in time } dt \sim \mathrm{Binomial}(N, rdt) $$
+Thus note that \(p\) represents the proportion of new-borns being vaccinated. Code in these ODEs into the editor and initialise it with the parameters provided for birth, death, recovery and transmission rates. Run the model for 200 days. Note we are analysing an additional model outputs, \(Reff\).

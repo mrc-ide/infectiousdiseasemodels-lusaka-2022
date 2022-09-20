@@ -1,1 +1,1 @@
-odin.ui:::odin_stochastic("sis.R", "doc.md")
+odin.ui:::odin_basic("model.R", "doc.md")
