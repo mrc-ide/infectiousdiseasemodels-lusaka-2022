@@ -11,8 +11,8 @@ initial(R) <- 0
 initial(V) <- p_vacc * pop
 
 # input parameter values
-I0 <- user(1)              # num infectious cases at start of epidemic (seed)
-days_to_onset <- user(3)
+I0 <- user(1)
+days_to_onset <- user(4)
 days_to_recovery <- user(7)
 p_vacc <- user(0)
 
