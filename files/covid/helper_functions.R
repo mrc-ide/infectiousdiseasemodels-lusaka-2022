@@ -28,18 +28,28 @@ process_data <- function(df, geography, province = FALSE) {
 }
 
 # function to plot time series incidence + cumulative
-plot_inc_cum <- function(df, what) {
+plot_inc_cum <- function(df, what, log = FALSE) {
   
   # some graphical parameters to make plots look better
   par(mar = c(5, 5, 2, 5))
   
   # plot
-  plot(df$date, df$incidence, main = paste(what),
-       type = "b", bty = "n", xlab = "Date", ylab = "Incidence")
-  par(new = TRUE)
-  plot(df$date, df$cumulative, type = "l", col = "red",
-       axes = FALSE, ylab = "", xlab = "")
-  axis(side = 4)
+  if(!log) {
+    plot(df$date, df$incidence, main = paste(what),
+         type = "b", bty = "n", xlab = "Date", ylab = "Incidence")
+    par(new = TRUE)
+    plot(df$date, df$cumulative, type = "l", col = "red",
+         axes = FALSE, ylab = "", xlab = "")
+    axis(side = 4)
+  } else
+  {
+    plot(df$date, log(1 + df$incidence), main = paste(what),
+         type = "b", bty = "n", xlab = "Date", ylab = "Log incidence")
+    par(new = TRUE)
+    plot(df$date, log(1 + df$cumulative), type = "l", col = "red",
+         axes = FALSE, ylab = "", xlab = "")
+    axis(side = 4)
+  }
   mtext(side = 4, line = 4, "Cumulative", col = "red")
   
 }
