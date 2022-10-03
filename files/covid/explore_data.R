@@ -25,7 +25,7 @@ deaths <- process_data(deaths, "Zambia")
 par(mfrow = c(2, 1))
 plot_inc_cum(cases, "Cases")
 plot_inc_cum(deaths, "Deaths")
-dev.off()
+par(mfrow = c(1, 1))
 #----
 
 ## 2. Visualise exponential growth in cases data to use for R_0 calculations ----
@@ -90,20 +90,23 @@ plot_inc_cum(xx_weekly, "Cases", log = TRUE)
 # (https://bmcinfectdis.biomedcentral.com/articles/10.1186/s12879-021-05950-x).
 # High CT values are on average lowest from 5 days pre- to 10 days post-symptoms
 # (https://pubmed.ncbi.nlm.nih.gov/33160066/)
-# Another study of intercotr/infectee paiers suggestedd a mean and STD of the 
-# SO of 4.7 and 2.9 days
+# Another study of infector/infectee pairs suggested a mean and STD of the 
+# SI of 4.7 and 2.9 days; here we will use the mid-point, 3.8 days.
 # (https://www.ijidonline.com/article/S1201-9712(20)30119-3/pdf)
+# Additionally we will calculate the STD of the mean estimate from the first
+# study (meta-analysis) of 23 studies, which we will use later for EpiEstim.
 V <- c(4.9, 5.5)
 mean_si <- 5.2
-std_mean_si = sqrt(23) * (V[2] - V[1]) / 3.92
-std_si <- 2.9
+std_si <- 3.8
+std_mean_si <- sqrt(23) * (V[2] - V[1]) / 3.92
 
 
 # Regress cumulative incidence over time (remember our data is weekly, so each
 # row represents a week)
 # split incidence data by 5 day intervals (mean SI)
 dt <- 7
-time_step <- rep(1:(nrow(xx) / dt), each = dt) 
+time_step <- rep(1:(nrow(xx) / dt), each = dt)
+time_step <- time_step[1:nrow(xx)]
 y <- sapply(split(xx$incidence, time_step), sum)
 
 y <- data.frame(
@@ -112,15 +115,23 @@ y <- data.frame(
   cum = cumsum(y)
 )
 
-log <- lm(data = y, log(inc) ~ time)
+# N.B. here we are doing log(inc + 1), given sometimes you have zeroes, which 
+# will return NAs if calculating their log (very useful trick with noisy data!)
+log <- lm(data = y, log(inc + 1) ~ time)
 
 # Rate of exponential growth
-r <- unname(log$coefficients["time"])
+r_weekly <- unname(log$coefficients["time"])
 # remember we are using weekly time steps, so we need to divide
 # by 7 here to transform the growth rate estimate back to days
+r <- r_weekly / dt
+r
 
 # doubling time
 log(2) / r
+
+# visualise the fit:
+plot(y$time, log$coefficients[["(Intercept)"]] + r_weekly * y$time,
+     col = "blue", lty = 2)
 
 # A 'ball-park' figure for R_0 using only the mean of the SI
 R0_central <- mean_si * r + 1
@@ -189,6 +200,7 @@ abline(h = 1, lty = 2, col = "red")
 
 ### So here we have it! We have estimated Rt given a parametric SI, which we have
 ### inferred from SI mean and std from the literature
+### Given EpiEstim, this is the estimated value of Rt (~R0) at the start of the epidemic:
 c("mean" = estim$R$`Mean(R)`[1], "lb" = lb_estim$R$`Quantile.0.025(R)`[1],
   "ub" = ub_estim$R$`Quantile.0.975(R)`[1])
 
@@ -224,7 +236,7 @@ uncertain_estim <- EpiEstim::estimate_R(xx$incidence,
 # of the SI are actually quite similar, you can see this here:
 gridExtra::grid.arrange(plot(estim, "R") + ggplot2::labs(title = "No uncertainty"),
                         plot(uncertain_estim, "R") + ggplot2::labs(title = "With uncertainty"))
-# and here you can see the equation-based uncertainty as the value of PMF
+# and here you can see the uncertainty in the SI distribution
 matplot(t(uncertain_estim$si_distr), type = "l", lty = 1, xlim = c(0, 15), 
         col = scales::alpha("black", 0.1), 
         xlab = "Days", ylab = "Positive matrix factorisation")
