@@ -50,24 +50,24 @@ mu_d <- user(14.4, min = 0)           # time from onset to death in days
 mu_r <- user(14, min = 0)           # mean time from onset to recovery in days
 ifr <- user(0.0055, min = 0, max = 1) # infection fatality ratio
 R0 <- user(2.7, min = 0)            # Rt (assume same for those who recover or die
-# beta (Rt) values
-beta_1 <- user(2.35, min = 0)
-beta_2 <- user(1.2, min = 0)
-beta_3 <- user(0.51, min = 0)
-beta_4 <- user(3.8, min = 0)
-beta_5 <- user(3.55, min = 0)
-beta_6 <- user(2.5, min = 0)
-beta_7 <- user(1.4, min = 0)
-beta_8 <- user(0.5, min = 0)
+# Rt values
+rt_1 <- user(2.35, min = 0)
+rt_2 <- user(1.2, min = 0)
+rt_3 <- user(0.51, min = 0)
+rt_4 <- user(3.8, min = 0)
+rt_5 <- user(3.55, min = 0)
+rt_6 <- user(2.5, min = 0)
+rt_7 <- user(1.4, min = 0)
+rt_8 <- user(0.5, min = 0)
 
-t_beta_1 <- user(100, min = 0)  # time of beta change points
-t_beta_2 <- user(130, min = 0)
-t_beta_3 <- user(145, min = 0)
-t_beta_4 <- user(267, min = 0)
-t_beta_5 <- user(280, min = 0)
-t_beta_6 <- user(300, min = 0)
-t_beta_7 <- user(315, min = 0)
-t_beta_8 <- user(335, min = 0)
+t_rt_1 <- user(100, min = 0)  # time of rt change points
+t_rt_2 <- user(130, min = 0)
+t_rt_3 <- user(145, min = 0)
+t_rt_4 <- user(267, min = 0)
+t_rt_5 <- user(280, min = 0)
+t_rt_6 <- user(300, min = 0)
+t_rt_7 <- user(315, min = 0)
+t_rt_8 <- user(335, min = 0)
 end_time <- user()
 
 ###############################
@@ -79,15 +79,15 @@ sigma_d <- 1 / mu_d
 sigma_r <- 1 / mu_r
 beta_r <- Rt / mu_r
 beta_d <- Rt / mu_d
-Rt <- if (t >= t_beta_8)
-  beta_8 else if (t >= t_beta_7)
-    beta_7 else if (t >= t_beta_6)
-      beta_6 else if (t >= t_beta_5)
-        beta_5 else if (t >= t_beta_4)
-          beta_4 else if (t >= t_beta_3)
-            beta_3 else if (t >= t_beta_2)
-              beta_2 else if (t >= t_beta_1)
-                beta_1 else
+Rt <- if (t >= t_rt_8)
+  rt_8 else if (t >= t_rt_7)
+    rt_7 else if (t >= t_rt_6)
+      rt_6 else if (t >= t_rt_5)
+        rt_5 else if (t >= t_rt_4)
+          rt_4 else if (t >= t_rt_3)
+            rt_3 else if (t >= t_rt_2)
+              rt_2 else if (t >= t_rt_1)
+                rt_1 else
                   R0
 
 ### additional things to output
